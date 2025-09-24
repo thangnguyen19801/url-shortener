@@ -49,24 +49,39 @@ Workflow `.github/workflows/ci.yml`:
 ```yaml
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Go
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.23'
+          go-version: 1.23
+
+      - name: Download Go modules
+        run: go mod download
+
       - name: Install golangci-lint
         run: |
-          go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.54.2
-      - name: Run linters
+          go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.58.0
+          echo "$HOME/go/bin" >> $GITHUB_PATH
+
+      - name: Run golangci-lint
         run: golangci-lint run ./...
-      - name: Test
+
+      - name: Run tests
         run: go test ./... -v
+
 ```
 
 ## Kubernetes Deployment (Optional)
