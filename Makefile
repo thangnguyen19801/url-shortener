@@ -4,7 +4,7 @@ build:
 	go build -o bin/url-shortener ./cmd/server
 
 docker:
-	docker build -t yourdockerhubusername/url-shortener:latest .
+	docker build -t thangminh/url-shortener:latest .
 
 run:
 	go run ./cmd/server
